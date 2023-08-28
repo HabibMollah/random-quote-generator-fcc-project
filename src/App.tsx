@@ -1,9 +1,15 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 
+type Quote = {
+  author: string;
+  quote: string;
+};
+
 export default function App() {
-  const [data, setData] = useState();
+  const [data, setData] = useState<Quote[]>();
   const [error, setError] = useState('');
+  const [quote, setQuote] = useState<Quote>();
 
   useEffect(() => {
     axios
@@ -17,13 +23,26 @@ export default function App() {
       });
   }, []);
 
+  function randomIndex() {
+    if (data) return Math.floor(Math.random() * data.length);
+    return 0;
+  }
+
+  function randomQuote() {
+    if (data) setQuote(data[randomIndex()]);
+    return;
+  }
+
   console.log(data);
+
   return (
     <>
       <main id="quote-box">
-        <section id="text"></section>
-        <h2 id="author"></h2>
-        <button id="new-quote"></button>
+        <section id="text">{quote?.quote}</section>
+        <h2 id="author">{quote?.author}</h2>
+        <button onClick={randomQuote} id="new-quote">
+          New Quote
+        </button>
         <a href="" id="tweet-quote"></a>
         {/* error message */}
         <p className="text-red-500">{error}</p>
